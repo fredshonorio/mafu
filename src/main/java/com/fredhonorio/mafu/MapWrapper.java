@@ -1,12 +1,16 @@
 package com.fredhonorio.mafu;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fredhonorio.mafu.list.ListWrapper;
+import com.fredhonorio.mafu.list.ObjectListWrapper;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("rawtypes")
@@ -17,6 +21,9 @@ public class MapWrapper implements Map {
 	 */
 
 	private final static MapWrapper EMPTY_MAPWRAPPER = new MapWrapper();
+
+	private final static ListWrapper<String> EMPTY_STR_LISTWRAPPER = ListWrapper.forPrimitive(ImmutableList.of(),
+			String.class);
 
 	// private final static ListWrapper emptyStringList = new
 	// ListWrapper<String>(new LinkedList<String>());
@@ -79,7 +86,25 @@ public class MapWrapper implements Map {
 		return new MapWrapper((Map) map.get(key));
 	}
 
-	// TODO: lists(strings, objects, longs, booleans)
+	public ListWrapper<String> stringList(Object key) {
+		Optional<List> inner = getAndCast(key, List.class);
+
+		if (!inner.isPresent())
+			return EMPTY_STR_LISTWRAPPER;
+
+		return ListWrapper.forPrimitive(inner.get(), String.class);
+	}
+
+	// TODO: lists(longs, booleans)
+
+	public ListWrapper<MapWrapper> objectList(Object key) {
+		Optional<List> inner = getAndCast(key, List.class);
+
+		if (!inner.isPresent())
+			return ObjectListWrapper.EMPTY;
+
+		return ListWrapper.forObject(inner.get());
+	}
 
 	/*
 	 * Optional interface implementation

@@ -1,18 +1,25 @@
 package com.fredhonorio.mafu;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 
 public class MapWrapperTest {
 
 	@SuppressWarnings("rawtypes")
 	public static Map JUDE = ImmutableMap.of("c1", "hey", "c2", "jude");
+	public static List<String> ROSES = ImmutableList.of("roses", "are", "red", "violets", "are", "blue");
+	public static List<ImmutableMap<String, String>> BAND = ImmutableList.of(ImmutableMap.of("name", "harry"),
+			ImmutableMap.of("name", "the potters"));
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Map MAP = ImmutableMap.copyOf(new HashMap() {
@@ -22,6 +29,8 @@ public class MapWrapperTest {
 			put("aBoolean", false);
 			put("aNumber", 10L);
 			put("aMap", JUDE);
+			put("aListOfStrings", ROSES);
+			put("aListOfObjects", BAND);
 		}
 	});
 
@@ -70,7 +79,27 @@ public class MapWrapperTest {
 	public void testOrMapWrapper() {
 		MapWrapper map = MapWrapper.wrap(MAP);
 		MapWrapper alt = MapWrapper.wrap(JUDE);
-
 		assertEquals(JUDE, map.object("MISSING_MAP").or(alt).get());
+	}
+
+	@Test
+	public void testStringList() {
+		MapWrapper map = MapWrapper.wrap(MAP);
+		assertEquals(ROSES, map.stringList("aListOfStrings").get());
+	}
+
+	@Test(expected = MappingException.MissingOrWrongType.class)
+	public void testWrongObjectList() {
+		MapWrapper map = MapWrapper.wrap(MAP);
+
+		// this only fails with asList, once the first element is consumed, is
+		// there another way?
+		map.objectList("aListOfStrings").toList();
+	}
+
+	@Test
+	public void testObjectList() {
+		MapWrapper map = MapWrapper.wrap(MAP);
+		assertEquals(BAND, map.objectList("aListOfObjects").toList());
 	}
 }
