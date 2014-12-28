@@ -8,8 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import static com.fredhonorio.mafu.functions.Lists.includeOnly;
-
+import com.fredhonorio.mafu.functions.Include;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -63,6 +62,12 @@ public class PrimitiveListWrapperTest {
 	public void testListOr() {
 		Iterable<String> x = MapWrapper.wrap(MAP).stringList("axListOfStrings").or(ImmutableList.of("hey"));
 		assertEquals(ImmutableList.of("hey"), x);
+
+		x = MapWrapper.wrap(MAP).stringList("aListOfObjects");
+
+		for (String xx : x)
+			System.out.println(x);
+
 	}
 
 	@Test(expected = MappingException.WrongType.class)
@@ -78,7 +83,7 @@ public class PrimitiveListWrapperTest {
 
 		MapWrapper m = MapWrapper.wrap(ImmutableMap.of("badlist", ImmutableList.of("A", 1, "B", 2, 0.0)));
 
-		List<String> badlist = m.stringList("badlist").toList(includeOnly(String.class));
+		List<String> badlist = m.stringList("badlist").toList(Include.ofClass(String.class));
 
 		assertEquals(badlist, ImmutableList.of("A", "B"));
 	}

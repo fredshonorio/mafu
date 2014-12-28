@@ -25,6 +25,7 @@ public class MapWrapperTest {
 			put("aBoolean", false);
 			put("aNumber", 10L);
 			put("aMap", JUDE);
+			put("anotherMap", JUDE);
 			put("aListOfStrings", ROSES);
 		}
 	});

@@ -10,13 +10,17 @@ It's only dependency is Google's Guava library.
 Usage is as follows:
 ### Basics
 
-After a map is wrapped ```MapWrapper map = MapWrapper.wrap(nakedmap)``` members are accessed by requesting specific types:
+After a map is wrapped `MapWrapper map = MapWrapper.wrap(nakedmap)` members are accessed by requesting specific types:
 
-```String name = map.string("name").get();```
+```
+String name = map.string("name").get();
+```
 
-Accessors for primitive types (like "string", "boolean", etc) return a guava Optional so you can:
+Accessors for primitive types (`string()`, `boolean()`, etc) return a guava Optional so you can:
 
-```String name = map.string("name").or("empty name");```
+```
+String name = map.string("name").or("empty name");
+```
 
 Guava suppliers that throw an exception when the element is missing are used like so:
 
@@ -36,21 +40,17 @@ __NOTE:__ Accessor methods for primiteves return `Optional.absent()` if the valu
 
 ### Maps of Maps
 
-Accessing java ```Map```s inside a MapWrapper returns another MapWrapper. Such as:
+Accessing a java `Map` inside a MapWrapper by using `object()`, it returns another MapWrapper. Such as:
 
 ```
 // Returns the inner map, wrapped
 MapWrapper name = map.object("name");
-
 String fullName = name.string("first").get() + name.string("last").get();
 ```
 
-MapWrapper is both a Map and a map container that mimicks `Optional<Map>`:
+MapWrapper is both a `Map` and a map container that mimicks `Optional<Map>`:
 ```
-Map defaultName = ImmutableMap.of(
-    "first", "John",
-    "last", "Doe"
-);
+Map defaultName = // native map
 
 // You can provide a concrete map alternative,
 Map name = map.object("name").or(defaultName);
@@ -76,7 +76,14 @@ for (String name : names) {
 
 // It also mimicks Optional<Iterable<T>>
 Iterable<String> names = map.stringList("names").or(ImmutableList.of("mark", "joanne"));
+
+// And can return a list
+List<String> names = map.stringList("names").toList();
 ```
+
+__NOTE:__ The accessor methods for list (`stringList()`, `objectList()`) returns `Optional.absent()` if the value does not exist or is not a `List`. It does __not__ check if the contained values match. Check the next section for ways to deal with this.
+
+#### Safety
 
 The problem with lists is that you can't know ahead of time if every element is of the declared type. So this can happen:
 ```
@@ -88,18 +95,44 @@ MapWrapper m = MapWrapper.wrap(
 
 ListWrapper<String> goodList = m.stringList("badlist");
 ```
-However, once you iterate the list and get to `2` you'll get a `MappingException.WrongType` error because `2` is not a `String` even thought `stringList` returns a `ListWrapper<String>`. __TODO__: LINK TO Gotchas.List.
+However, once you iterate the list and get to `2` you'll get a `MappingException.WrongType` error because `2` is not a `String` even thought `stringList` returns a `ListWrapper<String>`. To eleviate this you can either catch
+`MappingException.WrongType` or transform the elements of the list by passing a transformer to `toList`, like so:
+```
 
-__NOTE:__ The accessor methods for list (`stringList()`, `objectList()`) return `Optional.absent()` if the value does not exist or is not a `List`, it does not check if the contained values match, __TODO__: LINK TO Gotchas.List.
+// Remove null elements and use the result of toString for the rest
+Function<Object, Optional<String>> convertToString = new Function<Object, Optional<String>>() {
+    @Override
+	public Optional<String> apply(Object input) {
+
+        if(input != null)
+            return Optional.of(input.toString());
+
+        return Optional.absent();
+	}
+};
+
+List<String> safeList = map.stringList("unsafeList").toList(convertToString);
+
+```
+To create your own transformer simply create a `Function<Object, Optional<T>>` where `T` is the type contained. Return `Optional.absent()` to exclude the value from the list.
+
+
+A `Function` to filter out elements that are not of a certain class is provided:
+```
+List<String> safeList = map.stringList("unsafeList").toList(Include.ofClass(String.class));
+```
+
+Nested lists (`map.listOflistsOflistsOfStrings`) is not supported, only lists of primitives and lists of objects.
+
+#### Lists of objects
+
+Lists of objects are accessed by ```map.objectList()```. The behavior is consistent with that of regular lists, save some Gotchas. To filter invalid objects in `toList()` use `toList(Include.objects())`. Check the source to extend this transformer.
 
 ## Gotchas
 
-### Lists
-__TODO__: describe processing list so it conforms to type signature.
-
 ### Lists of objects
 
-`or()` for lists of objects is awkward. On one hand you want it to be an `Iterable<MapWrapper>` so that you can use the elements directly: 
+Using `or()` for lists of objects is awkward. On one hand you want it to be an `Iterable<MapWrapper>` so that you can use the elements directly:
 ```
 List<String> names = new LinkedList<String>();
 
@@ -111,20 +144,21 @@ but it would be useful to have:
 ```
 Map alternative = // a native (non-wrapped) map
 
-map.objectList("persons").or(alternative)
+map.objectList("persons").or(alternative);
 ```
 but that would mean objectList returns an `Iterable<Map>`. The ugly solution is to wrap the native map:
 ```
-map.objectList("persons").or(MapWrapper.wrap(alternative))
+map.objectList("persons").or(MapWrapper.wrap(alternative));
 ```
 
 ### ThrowChecked
 Although the constructor methods (forString, forBoolean, etc) declare ```throws CheckedMappingException.MissingOrWrongType``` the exception is actually thrown when the ```or()``` method calls the suppliers ```get()``` method. This just makes sure you have to catch the exception.
 
 ## TODO
-* talk about number/long
-* Checked exceptions
+* Lazy alternative to toList(transform)
+* Talk about number/long
+* Implement mentioned checked exceptions
 * Distinguish between missing and wrong type? It'd be a bit of work and i'm not sure it would be helpful, in either case you're excepting a certain structure and the object does not match. 
 * Make MapWrapper/ListWrapper a supplier
 * Provide generic accessor: MapWrapper.getAny(Object key, Class<T> class) : Optional<T>
-* Finish lists
+* Finish primitive lists

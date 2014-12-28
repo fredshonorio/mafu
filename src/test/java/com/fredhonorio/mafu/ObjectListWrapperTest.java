@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.fredhonorio.mafu.functions.Include;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -23,12 +24,22 @@ public class ObjectListWrapperTest {
 	// @formatter:on
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	// @formatter:off
 	public static Map MAP = ImmutableMap.copyOf(new HashMap() {
 		private static final long serialVersionUID = 1L;
 		{
 			put("aListOfObjects", BAND);
+			put("bad",
+				ImmutableList.of(
+					ImmutableMap.of("name", "harry"),
+					2,
+					ImmutableMap.of("name", "the potters"),
+					3
+				)
+			);
 		}
 	});
+	// @formatter:on
 
 	@Test
 	public void testSimple() {
@@ -52,5 +63,14 @@ public class ObjectListWrapperTest {
 		assertFalse(x.hasNext());
 
 		assertEquals(BAND, Lists.newLinkedList(map.objectList("nothing").get()));
+	}
+
+	@Test
+	public void testTransform() {
+		MapWrapper map = MapWrapper.wrap(MAP);
+
+		List<MapWrapper> x = map.objectList("bad").toList(Include.objects());
+		assertEquals(ImmutableMap.of("name", "harry"), x.get(0));
+		assertEquals(ImmutableMap.of("name", "the potters"), x.get(1));
 	}
 }
