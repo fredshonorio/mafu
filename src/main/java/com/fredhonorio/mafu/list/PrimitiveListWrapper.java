@@ -4,13 +4,27 @@ import java.util.Iterator;
 
 import com.fredhonorio.mafu.MappingException;
 import com.fredhonorio.mafu.Util;
+import com.fredhonorio.mafu.functions.Include;
 
 class PrimitiveListWrapper<T> extends PresentListWrapper<T> {
 
+	private final Class<T> cls;
+	private final Iterable<T> list;
+
+	public PrimitiveListWrapper(Iterable<T> list, Class<T> cls) {
+		this.cls = cls;
+		this.list = list;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new TypeCheckIterator<T>(list.iterator(), cls);
+	}
+
 	public static class TypeCheckIterator<T> implements Iterator<T> {
 
-		protected final Class<T> cls;
 		protected final Iterator<?> iter;
+		protected final Class<T> cls;
 
 		public TypeCheckIterator(Iterator<?> iter, Class<T> cls) {
 			this.iter = iter;
@@ -32,13 +46,10 @@ class PrimitiveListWrapper<T> extends PresentListWrapper<T> {
 			throw new MappingException.Immutable();
 		}
 	}
-	private final Class<T> cls;
 
-	private final Iterable<T> list;
-
-	public PrimitiveListWrapper(Iterable<T> list, Class<T> cls) {
-		this.cls = cls;
-		this.list = list;
+	@Override
+	protected Iterator<?> nativeIterator() {
+		return list.iterator();
 	}
 
 	@Override
@@ -47,12 +58,8 @@ class PrimitiveListWrapper<T> extends PresentListWrapper<T> {
 	}
 
 	@Override
-	public Iterator<T> iterator() {
-		return new TypeCheckIterator<T>(list.iterator(), cls);
+	public Iterable<T> safe() {
+		return adapt(Include.ofClass(cls));
 	}
 
-	@Override
-	protected Iterator<?> nativeIterator() {
-		return list.iterator();
-	}
 }

@@ -48,4 +48,15 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	public List<T> toList(Function<Object, Optional<T>> transform) {
 		return Collections.emptyList();
 	}
+
+	@Override
+	public Iterable<T> adapt(Function<Object, Optional<T>> adapter) {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Iterable<T> safe() {
+		return Collections.emptyList();
+	}
+
 }

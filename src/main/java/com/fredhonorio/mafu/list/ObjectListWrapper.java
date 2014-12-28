@@ -6,6 +6,7 @@ import java.util.Map;
 import com.fredhonorio.mafu.MapWrapper;
 import com.fredhonorio.mafu.MappingException;
 import com.fredhonorio.mafu.Util;
+import com.fredhonorio.mafu.functions.Include;
 
 @SuppressWarnings("rawtypes")
 class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
@@ -61,4 +62,10 @@ class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 	protected Iterator<?> nativeIterator() {
 		return list.iterator();
 	}
+
+	@Override
+	public Iterable<MapWrapper> safe() {
+		return adapt(Include.objects());
+	}
+
 }

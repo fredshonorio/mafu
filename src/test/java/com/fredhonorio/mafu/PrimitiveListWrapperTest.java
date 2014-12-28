@@ -3,6 +3,7 @@ package com.fredhonorio.mafu;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -80,4 +81,15 @@ public class PrimitiveListWrapperTest {
 
 		assertEquals(badlist, ImmutableList.of("A", "B"));
 	}
+
+	@Test
+	public void testAdaptFilterOutLazy() {
+		MapWrapper m = MapWrapper.wrap(ImmutableMap.of("badlist", ImmutableList.of("A", 1, "B", 2, 0.0)));
+
+		Iterator<String> it = m.stringList("badlist").safe().iterator();
+		assertEquals("A", it.next());
+		assertEquals("B", it.next());
+		assertFalse(it.hasNext());
+	}
+
 }

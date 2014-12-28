@@ -70,4 +70,8 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 
 	public abstract List<T> toList(Function<Object, Optional<T>> transform);
 
+	public abstract Iterable<T> adapt(Function<Object, Optional<T>> adapter);
+
+	public abstract Iterable<T> safe();
+
 }

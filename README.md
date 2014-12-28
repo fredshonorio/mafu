@@ -169,6 +169,10 @@ import static com.fredhonorio.mafu.MapWrapper.wrap;
 ...
 MapWrapper m = wrap(alternative);
 ```
+# Feature TODO:
+* more tests
+* document safe(), make sure it's known that it will fail silently (return empty list) if you filter everything out
+* rename transform to adapt in docs and code
 
 # TODO
 * More functional utilities? Which?

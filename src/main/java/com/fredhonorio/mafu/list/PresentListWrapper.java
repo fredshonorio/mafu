@@ -42,4 +42,17 @@ public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 		return list.build();
 	}
 
+	@Override
+	public Iterable<T> adapt(final Function<Object, Optional<T>> adapter) {
+		return new Iterable<T>() {
+
+			@Override
+			public Iterator<T> iterator() {
+				@SuppressWarnings("unchecked")
+				final Iterator<Object> it = (Iterator<Object>) nativeIterator();
+				return (Iterator<T>) new TransformIterator<Object, T>(it, adapter);
+			}
+
+		};
+	}
 }
