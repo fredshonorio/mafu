@@ -25,17 +25,17 @@ public abstract class MappingException extends RuntimeException {
 		public MissingOrWrongType() {
 			super("Value is missing or has the wrong type");
 		}
-
 	}
 
-	public static class CastException extends MappingException {
-		private static final long serialVersionUID = -2199030432346968112L;
+	public static class WrongType extends MappingException {
+
+		private static final long serialVersionUID = 5397675134924213676L;
 
 		@SuppressWarnings("rawtypes")
-		public CastException(Object key, Class type, Class expected) {
-			super("Key '" + String.valueOf(key) + "' is of type '" + type.getName() + "', should be '"
-					+ expected.getName() + "'.");
+		public WrongType(Object a, Class expected) {
+			super("Value '" + String.valueOf(a) + "' has the wrong type, expected: " + expected.getName());
 		}
+
 	}
 
 	public static class Immutable extends MappingException {

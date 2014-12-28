@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import com.google.common.base.Supplier;
 
-public class PresentListWrapper<T> extends ListWrapper<T> {
+public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 
 	protected final Iterable<T> list;
 

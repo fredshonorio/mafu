@@ -42,14 +42,14 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 	public abstract Iterable<T> or(Iterable<T> list);
 
 	public abstract Iterable<T> or(Supplier<Iterable<T>> listS);
-	
+
 	public abstract boolean isPresent();
 
 	private static AbsentListWrapper<Object> absent = new AbsentListWrapper<Object>();
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <T> ListWrapper<T> forPrimitive(List list, Class<T> cls) {
-		return new PresentListWrapper(list);
+		return new PrimitiveListWrapper(list, cls);
 	}
 
 	public static ListWrapper<MapWrapper> forObject(List<MapWrapper> list) {

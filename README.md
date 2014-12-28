@@ -86,14 +86,9 @@ MapWrapper m = MapWrapper.wrap(
 	)
 );
 
-for (Object x : m.stringList("badlist"))
-    System.out.println(x);
-
-// prints:
-// A
-// 2
+ListWrapper<String> goodList = m.stringList("badlist");
 ```
-Even thought `stringList` returns a `ListWrapper<String>`. One solution is calling `toList()` which traverses the inner list and copies every element an immutable list while checking every element. This of course can be costly if the list is too large.
+However, once you iterate the list and get to `2` you'll get a `MappingException.WrongType` error because `2` is not a `String` even thought `stringList` returns a `ListWrapper<String>`. __TODO__: LINK TO Gotchas.List.
 
 __NOTE:__ The accessor methods for list (`stringList()`, `objectList()`) return `Optional.absent()` if the value does not exist or is not a `List`, it does not check if the contained values match, __TODO__: LINK TO Gotchas.List.
 

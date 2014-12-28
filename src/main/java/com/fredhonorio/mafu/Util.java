@@ -7,7 +7,7 @@ public abstract class Util {
 			T t = cls.cast(v);
 			return t;
 		} catch (ClassCastException e) {
-			throw new MappingException.MissingOrWrongType();
+			throw new MappingException.WrongType(v, cls);
 		}
 	}
 

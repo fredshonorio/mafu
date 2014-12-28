@@ -87,7 +87,7 @@ public class MapWrapperTest {
 		assertEquals(ROSES, map.stringList("aListOfStrings").get());
 	}
 
-	@Test(expected = MappingException.MissingOrWrongType.class)
+	@Test(expected = MappingException.WrongType.class)
 	public void testWrongObjectList() {
 		MapWrapper map = MapWrapper.wrap(MAP);
 
@@ -114,7 +114,7 @@ public class MapWrapperTest {
 		assertEquals(ImmutableList.of("hey"), x);
 	}
 
-	@Test
+	@Test(expected = MappingException.WrongType.class)
 	public void testBadList() {
 
 		MapWrapper m = MapWrapper.wrap(

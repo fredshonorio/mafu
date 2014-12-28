@@ -15,12 +15,12 @@ public class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 
 	@Override
 	public Iterator<MapWrapper> iterator() {
-		return new ObjListIterator(list.iterator());
+		return new ObjectListIterator(list.iterator());
 	}
 
-	private class ObjListIterator implements Iterator<MapWrapper> {
+	private class ObjectListIterator implements Iterator<MapWrapper> {
 
-		public ObjListIterator(Iterator<?> iter) {
+		public ObjectListIterator(Iterator<?> iter) {
 			this.iter = iter;
 		}
 
