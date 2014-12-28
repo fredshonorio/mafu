@@ -147,10 +147,9 @@ map.objectList("persons").or(MapWrapper.wrap(alternative));
 ```
 
 ## TODO
-* Finish exception suppliers
 * Lazy alternative to `toList(transform)`
 * Talk about number/long
 * Implement checked exceptions? Is it worth it? For Primitive accessors and objects it can be done, but for lists it has to be a runtime exception.
 * Distinguish between missing and wrong type? It'd be a bit of work and i'm not sure it would be helpful, in either case you're excepting a certain structure and the object does not match. 
 * Provide generic accessor: `MapWrapper.getAny(Object key, Class<T> class) : Optional<T>`
-* More tests for primitive lists
+* More tests for primitive lists, exception suppliers

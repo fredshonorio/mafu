@@ -15,16 +15,6 @@ import com.google.common.base.Optional;
  */
 public abstract class Include {
 
-	public static <T> Function<Object, Optional<T>> ofClass(final Class<T> cls) {
-		return new Function<Object, Optional<T>>() {
-
-			@Override
-			public Optional<T> apply(Object input) {
-				return Util.tryCast(input, cls);
-			}
-		};
-	}
-
 	public static Function<Object, Optional<MapWrapper>> objects() {
 		return new Function<Object, Optional<MapWrapper>>() {
 
@@ -38,6 +28,16 @@ public abstract class Include {
 					return Optional.of(MapWrapper.wrap(m.get()));
 
 				return Optional.absent();
+			}
+		};
+	}
+
+	public static <T> Function<Object, Optional<T>> ofClass(final Class<T> cls) {
+		return new Function<Object, Optional<T>>() {
+
+			@Override
+			public Optional<T> apply(Object input) {
+				return Util.tryCast(input, cls);
 			}
 		};
 	}

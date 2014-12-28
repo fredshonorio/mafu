@@ -10,17 +10,6 @@ import com.fredhonorio.mafu.Util;
 @SuppressWarnings("rawtypes")
 class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 
-	private final Iterable<Map> list;
-
-	public ObjectListWrapper(Iterable<Map> list) {
-		this.list = list;
-	}
-
-	@Override
-	public Iterator<MapWrapper> iterator() {
-		return new ObjectListIterator(list.iterator());
-	}
-
 	/**
 	 * An iterator that wraps a map iterator, checks if the elements are indeed
 	 * maps and wraps each one around a MapWrapper.
@@ -28,13 +17,13 @@ class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 	 * @author fredh
 	 * 
 	 */
-	private class ObjectListIterator implements Iterator<MapWrapper> {
+	private static class ObjectListIterator implements Iterator<MapWrapper> {
+
+		public final Iterator<?> iter;
 
 		public ObjectListIterator(Iterator<?> iter) {
 			this.iter = iter;
 		}
-
-		public final Iterator<?> iter;
 
 		@Override
 		public boolean hasNext() {
@@ -52,13 +41,24 @@ class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 		}
 	}
 
-	@Override
-	protected Iterator<?> nativeIterator() {
-		return list.iterator();
+	private final Iterable<Map> list;
+
+	public ObjectListWrapper(Iterable<Map> list) {
+		this.list = list;
 	}
 
 	@Override
 	public Iterable<MapWrapper> get() {
 		return this;
+	}
+
+	@Override
+	public Iterator<MapWrapper> iterator() {
+		return new ObjectListIterator(list.iterator());
+	}
+
+	@Override
+	protected Iterator<?> nativeIterator() {
+		return list.iterator();
 	}
 }

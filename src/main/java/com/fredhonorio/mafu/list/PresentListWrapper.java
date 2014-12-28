@@ -11,6 +11,13 @@ import com.google.common.collect.ImmutableList;
 public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 
 	@Override
+	public boolean isPresent() {
+		return true;
+	}
+
+	protected abstract Iterator<?> nativeIterator();
+
+	@Override
 	public Iterable<T> or(Iterable<T> list) {
 		return this;
 	}
@@ -19,13 +26,6 @@ public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 	public Iterable<T> or(Supplier<Iterable<T>> listS) {
 		return this;
 	}
-
-	@Override
-	public boolean isPresent() {
-		return true;
-	}
-
-	protected abstract Iterator<?> nativeIterator();
 
 	@Override
 	public List<T> toList(Function<Object, Optional<T>> transform) {

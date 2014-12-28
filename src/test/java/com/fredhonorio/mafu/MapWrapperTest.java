@@ -68,7 +68,7 @@ public class MapWrapperTest {
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testOrThrow() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.object("MISSING_MAP").or(Throw.forMap());
+		map.object("MISSING_MAP").or(Throw.forObject());
 	}
 
 	@Test

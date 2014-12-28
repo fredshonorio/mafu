@@ -1,14 +1,16 @@
 package com.fredhonorio.mafu;
 
 public abstract class MappingException extends RuntimeException {
-	private static final long serialVersionUID = -4810485394378648386L;
+	public static class Immutable extends MappingException {
+		private static final long serialVersionUID = -1L;
 
-	public MappingException(String message) {
-		super(message);
+		public Immutable() {
+			super("Wrapper does not implement mutation operations.");
+		}
 	}
 
 	public static class MissingOrWrongType extends MappingException {
-		private static final long serialVersionUID = 2362462151932731649L;
+		private static final long serialVersionUID = -1L;
 
 		public MissingOrWrongType() {
 			super("Value is missing or has the wrong type");
@@ -17,7 +19,7 @@ public abstract class MappingException extends RuntimeException {
 
 	public static class WrongType extends MappingException {
 
-		private static final long serialVersionUID = 5397675134924213676L;
+		private static final long serialVersionUID = -1L;
 
 		@SuppressWarnings("rawtypes")
 		public WrongType(Object a, Class expected) {
@@ -26,12 +28,10 @@ public abstract class MappingException extends RuntimeException {
 
 	}
 
-	public static class Immutable extends MappingException {
-		private static final long serialVersionUID = -2199030432346968112L;
+	private static final long serialVersionUID = -1L;
 
-		public Immutable() {
-			super("Wrapper does not implement mutation operations.");
-		}
+	public MappingException(String message) {
+		super(message);
 	}
 
 }

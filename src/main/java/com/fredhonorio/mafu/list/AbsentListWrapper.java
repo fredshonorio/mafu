@@ -15,13 +15,18 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	}
 
 	@Override
-	public Iterator<T> iterator() {
-		return Collections.emptyIterator();
+	public Iterable<T> get() {
+		throw new MappingException.MissingOrWrongType();
 	}
 
 	@Override
-	public List<T> toList() {
-		return Collections.emptyList();
+	public boolean isPresent() {
+		return false;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return Collections.emptyIterator();
 	}
 
 	@Override
@@ -35,17 +40,12 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	}
 
 	@Override
-	public boolean isPresent() {
-		return false;
+	public List<T> toList() {
+		return Collections.emptyList();
 	}
 
 	@Override
 	public List<T> toList(Function<Object, Optional<T>> transform) {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public Iterable<T> get() {
-		throw new MappingException.MissingOrWrongType();
 	}
 }
