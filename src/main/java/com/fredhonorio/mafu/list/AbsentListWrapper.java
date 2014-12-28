@@ -5,9 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.fredhonorio.mafu.MappingException;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 
-public class AbsentListWrapper<T> extends ListWrapper<T> {
+class AbsentListWrapper<T> extends ListWrapper<T> {
 
 	protected AbsentListWrapper() {
 	}
@@ -18,18 +20,8 @@ public class AbsentListWrapper<T> extends ListWrapper<T> {
 	}
 
 	@Override
-	public Iterable<T> get() {
-		throw new MappingException.MissingOrWrongType();
-	}
-
-	@Override
 	public List<T> toList() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public ListWrapper<T> or(ListWrapper<T> listW) {
-		return listW;
 	}
 
 	@Override
@@ -45,5 +37,15 @@ public class AbsentListWrapper<T> extends ListWrapper<T> {
 	@Override
 	public boolean isPresent() {
 		return false;
+	}
+
+	@Override
+	public List<T> toList(Function<Object, Optional<T>> transform) {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Iterable<T> get() {
+		throw new MappingException.MissingOrWrongType();
 	}
 }

@@ -7,10 +7,13 @@ import com.fredhonorio.mafu.MapWrapper;
 import com.fredhonorio.mafu.MappingException;
 import com.fredhonorio.mafu.Util;
 
-public class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
+@SuppressWarnings("rawtypes")
+class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 
-	public ObjectListWrapper(Iterable<MapWrapper> list) {
-		super(list);
+	private final Iterable<Map> list;
+
+	public ObjectListWrapper(Iterable<Map> list) {
+		this.list = list;
 	}
 
 	@Override
@@ -18,6 +21,13 @@ public class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 		return new ObjectListIterator(list.iterator());
 	}
 
+	/**
+	 * An iterator that wraps a map iterator, checks if the elements are indeed
+	 * maps and wraps each one around a MapWrapper.
+	 * 
+	 * @author fredh
+	 * 
+	 */
 	private class ObjectListIterator implements Iterator<MapWrapper> {
 
 		public ObjectListIterator(Iterator<?> iter) {
@@ -40,5 +50,15 @@ public class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 		public void remove() {
 			throw new MappingException.Immutable();
 		}
+	}
+
+	@Override
+	protected Iterator<?> nativeIterator() {
+		return list.iterator();
+	}
+
+	@Override
+	public Iterable<MapWrapper> get() {
+		return this;
 	}
 }

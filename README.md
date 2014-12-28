@@ -93,13 +93,36 @@ However, once you iterate the list and get to `2` you'll get a `MappingException
 __NOTE:__ The accessor methods for list (`stringList()`, `objectList()`) return `Optional.absent()` if the value does not exist or is not a `List`, it does not check if the contained values match, __TODO__: LINK TO Gotchas.List.
 
 ## Gotchas
+
 ### Lists
 __TODO__: describe processing list so it conforms to type signature.
+
+### Lists of objects
+
+`or()` for lists of objects is awkward. On one hand you want it to be an `Iterable<MapWrapper>` so that you can use the elements directly: 
+```
+List<String> names = new LinkedList<String>();
+
+for(MapWrapper person : map.objectList("persons")) {
+    names.add(person.string("name"));
+}
+```
+but it would be useful to have:
+```
+Map alternative = // a native (non-wrapped) map
+
+map.objectList("persons").or(alternative)
+```
+but that would mean objectList returns an `Iterable<Map>`. The ugly solution is to wrap the native map:
+```
+map.objectList("persons").or(MapWrapper.wrap(alternative))
+```
 
 ### ThrowChecked
 Although the constructor methods (forString, forBoolean, etc) declare ```throws CheckedMappingException.MissingOrWrongType``` the exception is actually thrown when the ```or()``` method calls the suppliers ```get()``` method. This just makes sure you have to catch the exception.
 
 ## TODO
+* talk about number/long
 * Checked exceptions
 * Distinguish between missing and wrong type? It'd be a bit of work and i'm not sure it would be helpful, in either case you're excepting a certain structure and the object does not match. 
 * Make MapWrapper/ListWrapper a supplier

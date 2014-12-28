@@ -2,22 +2,16 @@ package com.fredhonorio.mafu.list;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.fredhonorio.mafu.MapWrapper;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 
 /**
- * TODO: Specify behavior when:
- * 
- * List has distinct types -> ["hey", 123] or ["hey", {"hey": 11}]. This is
- * hopefully not frequent enough but i'm not sure how to handle it.
- * 
- * Lists are evaluated lazily so you can't return an empty optional.
- * 
- * 
- * 
- * 
+ * Defines a wrapper for a list.
  * 
  * @author fredh
  * 
@@ -25,9 +19,13 @@ import com.google.common.collect.ImmutableList;
  */
 public abstract class ListWrapper<T> implements Iterable<T> {
 
+	/*
+	 * Iterator
+	 */
+
 	public abstract Iterator<T> iterator();
 
-	public abstract Iterable<T> get();
+	public abstract List<T> toList(Function<Object, Optional<T>> transform);
 
 	public List<T> toList() {
 		return ImmutableList.copyOf(iterator());
@@ -37,7 +35,7 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 	 * Optional<T> inteface
 	 */
 
-	public abstract ListWrapper<T> or(ListWrapper<T> listW);
+	public abstract Iterable<T> get();
 
 	public abstract Iterable<T> or(Iterable<T> list);
 
@@ -45,14 +43,20 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 
 	public abstract boolean isPresent();
 
+	/*
+	 * Static
+	 */
+
 	private static AbsentListWrapper<Object> absent = new AbsentListWrapper<Object>();
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <T> ListWrapper<T> forPrimitive(List list, Class<T> cls) {
+		// checks are done by the iterator
 		return new PrimitiveListWrapper(list, cls);
 	}
 
-	public static ListWrapper<MapWrapper> forObject(List<MapWrapper> list) {
+	@SuppressWarnings("rawtypes")
+	public static ListWrapper<MapWrapper> forObject(List<Map> list) {
 		return new ObjectListWrapper(list);
 	}
 
@@ -62,6 +66,7 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 
 	@SuppressWarnings("unchecked")
 	public static <T> ListWrapper<T> absent(Class<T> cls) {
+		// No checks needed, the container is empty
 		return (ListWrapper<T>) absent;
 	}
 }

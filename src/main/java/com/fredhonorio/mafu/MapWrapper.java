@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fredhonorio.mafu.list.ListWrapper;
-import com.fredhonorio.mafu.list.PresentListWrapper;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -83,18 +82,20 @@ public class MapWrapper implements Map {
 		if (!inner.isPresent())
 			return EMPTY_STRLIST;
 
-		return PresentListWrapper.forPrimitive(inner.get(), String.class);
+		return ListWrapper.forPrimitive(inner.get(), String.class);
 	}
 
 	// TODO: lists(longs, booleans)
 
+	@SuppressWarnings("unchecked")
 	public ListWrapper<MapWrapper> objectList(Object key) {
 		Optional<List> inner = getAndCast(key, List.class);
 
 		if (!inner.isPresent())
 			return ListWrapper.absent(MapWrapper.class);
 
-		return PresentListWrapper.forObject(inner.get());
+		// this is checked by the iterator
+		return ListWrapper.forObject(inner.get());
 	}
 
 	/*
