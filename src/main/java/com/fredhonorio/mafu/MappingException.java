@@ -7,18 +7,6 @@ public abstract class MappingException extends RuntimeException {
 		super(message);
 	}
 
-	public static class NoSuchKey extends MappingException {
-		private static final long serialVersionUID = -2199030432346968112L;
-
-		public NoSuchKey(Object key) {
-			super("Key '" + String.valueOf(key) + "' does not exist.");
-		}
-
-		public NoSuchKey() {
-			super("Value does not exist.");
-		}
-	}
-
 	public static class MissingOrWrongType extends MappingException {
 		private static final long serialVersionUID = 2362462151932731649L;
 

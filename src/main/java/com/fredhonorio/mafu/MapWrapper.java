@@ -14,15 +14,23 @@ import com.google.common.collect.ImmutableMap;
 @SuppressWarnings("rawtypes")
 public class MapWrapper implements Map {
 
-	// Static
+	/*
+	 * Static
+	 */
 
 	final static MapWrapper EMPTY_MAPWRAPPER = new MapWrapper();
 
 	final static ListWrapper<String> EMPTY_STRLIST = ListWrapper.absent(String.class);
+	final static ListWrapper<Long> EMPTY_NUMLIST = ListWrapper.absent(Long.class);
+	final static ListWrapper<Boolean> EMPTY_BOOLLIST = ListWrapper.absent(Boolean.class);
 
 	public static MapWrapper wrap(Map map) {
 		return new MapWrapper(map);
 	}
+
+	/*
+	 * Instance
+	 */
 
 	private final boolean absent;
 	private final Map map;
@@ -37,10 +45,6 @@ public class MapWrapper implements Map {
 		this.absent = true;
 	}
 
-	/*
-	 * Accessors
-	 */
-
 	private <V> Optional<V> getAndCast(Object key, Class<V> cls) {
 
 		if (map.containsKey(key)) {
@@ -54,6 +58,10 @@ public class MapWrapper implements Map {
 
 		return Optional.absent();
 	}
+
+	/*
+	 * Accessors
+	 */
 
 	public Optional<String> string(Object key) {
 		return getAndCast(key, String.class);
@@ -85,7 +93,23 @@ public class MapWrapper implements Map {
 		return ListWrapper.forPrimitive(inner.get(), String.class);
 	}
 
-	// TODO: lists(longs, booleans)
+	public ListWrapper<Long> numberList(Object key) {
+		Optional<List> inner = getAndCast(key, List.class);
+
+		if (!inner.isPresent())
+			return EMPTY_NUMLIST;
+
+		return ListWrapper.forPrimitive(inner.get(), Long.class);
+	}
+
+	public ListWrapper<Boolean> boolList(Object key) {
+		Optional<List> inner = getAndCast(key, List.class);
+
+		if (!inner.isPresent())
+			return EMPTY_BOOLLIST;
+
+		return ListWrapper.forPrimitive(inner.get(), Boolean.class);
+	}
 
 	@SuppressWarnings("unchecked")
 	public ListWrapper<MapWrapper> objectList(Object key) {

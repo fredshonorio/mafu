@@ -4,6 +4,16 @@ import java.util.Map;
 
 import com.google.common.base.Supplier;
 
+/**
+ * Although the constructor methods (forString, forBoolean, etc) declare
+ * ```throws CheckedMappingException.MissingOrWrongType``` the exception is
+ * actually thrown when the ```or()``` method calls the suppliers ```get()```
+ * method. This just makes sure you have to catch the exception.
+ * 
+ * @author fredh
+ * 
+ * @param <T>
+ */
 public class ThrowChecked<T> implements Supplier<T> {
 
 	@Override

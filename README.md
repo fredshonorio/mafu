@@ -6,34 +6,29 @@ Due to the nature of this structure, the contained types are not known at compil
 so handling maps (json object trees) in Java eventually becomes a mess of casts and checks. It arrose from the need to parse unrully json so it's mostly shapped for that.
 It's only dependency is Google's Guava library.
 
+Any improvement or debates regarding readability or expressivity are welcome.
+
 ## Usage
 Usage is as follows:
 ### Basics
 
-After a map is wrapped `MapWrapper map = MapWrapper.wrap(nakedmap)` members are accessed by requesting specific types:
+After a map is wrapped: `MapWrapper map = MapWrapper.wrap(nakedmap)`, members are accessed by requesting specific types:
 
 ```
 String name = map.string("name").get();
 ```
 
-Accessors for primitive types (`string()`, `boolean()`, etc) return a guava Optional so you can:
+Accessors for primitive types (`string()`, `boolean()`, etc) return a guava Optional, so you can do:
 
 ```
 String name = map.string("name").or("empty name");
 ```
 
-Guava suppliers that throw an exception when the element is missing are used like so:
+Guava suppliers that throw an exception when the element is missing can be used like so:
 
 ```
 // Throws MappingException.MissingOrWrongType
 String name = map.string("name").or(Throw.forString());
-```
-
-Or a checked exception:
-
-```
-// Throws CheckedMappingException.MissingOrWrongType
-String name = map.string("name").or(ThrowChecked.forString());
 ```
 
 __NOTE:__ Accessor methods for primiteves return `Optional.absent()` if the value does not exist or is not of the requested type.
@@ -151,14 +146,11 @@ but that would mean objectList returns an `Iterable<Map>`. The ugly solution is 
 map.objectList("persons").or(MapWrapper.wrap(alternative));
 ```
 
-### ThrowChecked
-Although the constructor methods (forString, forBoolean, etc) declare ```throws CheckedMappingException.MissingOrWrongType``` the exception is actually thrown when the ```or()``` method calls the suppliers ```get()``` method. This just makes sure you have to catch the exception.
-
 ## TODO
-* Lazy alternative to toList(transform)
+* Finish exception suppliers
+* Lazy alternative to `toList(transform)`
 * Talk about number/long
-* Implement mentioned checked exceptions
+* Implement checked exceptions? Is it worth it? For Primitive accessors and objects it can be done, but for lists it has to be a runtime exception.
 * Distinguish between missing and wrong type? It'd be a bit of work and i'm not sure it would be helpful, in either case you're excepting a certain structure and the object does not match. 
-* Make MapWrapper/ListWrapper a supplier
-* Provide generic accessor: MapWrapper.getAny(Object key, Class<T> class) : Optional<T>
-* Finish primitive lists
+* Provide generic accessor: `MapWrapper.getAny(Object key, Class<T> class) : Optional<T>`
+* More tests for primitive lists

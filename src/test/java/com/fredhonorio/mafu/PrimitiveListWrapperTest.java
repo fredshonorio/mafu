@@ -62,19 +62,12 @@ public class PrimitiveListWrapperTest {
 	public void testListOr() {
 		Iterable<String> x = MapWrapper.wrap(MAP).stringList("axListOfStrings").or(ImmutableList.of("hey"));
 		assertEquals(ImmutableList.of("hey"), x);
-
-		x = MapWrapper.wrap(MAP).stringList("aListOfObjects");
-
-		for (String xx : x)
-			System.out.println(x);
-
 	}
 
 	@Test(expected = MappingException.WrongType.class)
 	public void testBadList() {
 
 		MapWrapper m = MapWrapper.wrap(ImmutableMap.of("badlist", ImmutableList.of("A", 2)));
-
 		m.stringList("badlist").toList();
 	}
 
@@ -86,9 +79,5 @@ public class PrimitiveListWrapperTest {
 		List<String> badlist = m.stringList("badlist").toList(Include.ofClass(String.class));
 
 		assertEquals(badlist, ImmutableList.of("A", "B"));
-	}
-
-	@Test
-	public void testFuture() {
 	}
 }
