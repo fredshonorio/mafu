@@ -1,16 +1,20 @@
 
-# MAFU - MAps For hUmans
+MAFU
+====
+MAps For hUmans
+----
 
-MAFU provides several somewhat lazy and somewhat functional methods of accessing (reading from, not writting to) maps in Java.
+MAFU provides several somewhat lazy and somewhat functional methods of accessing (reading from, not writing to) maps in Java.
 Due to the nature of this structure, the contained types are not known at compile time,
-so handling maps (json object trees) in Java eventually becomes a mess of casts and checks. It arrose from the need to parse unrully json so it's mostly shapped for that.
+so handling maps (json object trees) in Java eventually becomes a mess of casts and checks.
+It arose from the need to parse unruly json so it's mostly shaped by that.
 It's only dependency is Google's Guava library.
 
-Any improvement or debates regarding readability or expressivity are welcome.
+Any improvement or debates regarding readability or expressiveness are welcome. Some names still feel weird.
 
-## Usage
+# Usage
 Usage is as follows:
-### Basics
+## Basics
 
 After a map is wrapped: `MapWrapper map = MapWrapper.wrap(nakedmap)`, members are accessed by requesting specific types:
 
@@ -31,9 +35,9 @@ Guava suppliers that throw an exception when the element is missing can be used 
 String name = map.string("name").or(Throw.forString());
 ```
 
-__NOTE:__ Accessor methods for primiteves return `Optional.absent()` if the value does not exist or is not of the requested type.
+__NOTE:__ Accessor methods for primitives return `Optional.absent()` if the value does not exist or is not of the requested type.
 
-### Maps of Maps
+## Maps of Maps
 
 Accessing a java `Map` inside a MapWrapper by using `object()`, it returns another MapWrapper. Such as:
 
@@ -43,7 +47,7 @@ MapWrapper name = map.object("name");
 String fullName = name.string("first").get() + name.string("last").get();
 ```
 
-MapWrapper is both a `Map` and a map container that mimicks `Optional<Map>`:
+MapWrapper is both a `Map` and a map container that mimics `Optional<Map>`:
 ```
 Map defaultName = // native map
 
@@ -59,7 +63,7 @@ Map name = map.object("name").or(map.object("friend").object("name")).or(default
 
 __NOTE:__ The accessor method for maps (`object()`) returns `Optional.absent()` if the value does not exist or is not a `Map`.
 
-### Lists
+## Lists
 Lists are hard! To get a list of a specific type you use the `ListWrapper`:
 ```
 ListWrapper<String> names = map.stringList("names");
@@ -69,16 +73,17 @@ for (String name : names) {
     System.out.println("Hey " + name + "!");
 }
 
-// It also mimicks Optional<Iterable<T>>
+// It also mimics Optional<Iterable<T>>
 Iterable<String> names = map.stringList("names").or(ImmutableList.of("mark", "joanne"));
 
 // And can return a list
 List<String> names = map.stringList("names").toList();
 ```
 
-__NOTE:__ The accessor methods for list (`stringList()`, `objectList()`) returns `Optional.absent()` if the value does not exist or is not a `List`. It does __not__ check if the contained values match. Check the next section for ways to deal with this.
+__NOTE:__ The accessor methods for list (`stringList()`, `objectList()`) returns `Optional.absent()` if the value does not exist or is not a `List`.
+It does __not__ check if the contained values match. Check the next section for ways to deal with this.
 
-#### Safety
+### Safety
 
 The problem with lists is that you can't know ahead of time if every element is of the declared type. So this can happen:
 ```
@@ -109,23 +114,23 @@ Function<Object, Optional<String>> convertToString = new Function<Object, Option
 List<String> safeList = map.stringList("unsafeList").toList(convertToString);
 
 ```
-To create your own transformer simply create a `Function<Object, Optional<T>>` where `T` is the type contained. Return `Optional.absent()` to exclude the value from the list.
-
+To create your own transformer simply create a `Function<Object, Optional<T>>` where `T` is the type contained.
+Return `Optional.absent()` to exclude the value from the list.
 
 A `Function` to filter out elements that are not of a certain class is provided:
 ```
 List<String> safeList = map.stringList("unsafeList").toList(Include.ofClass(String.class));
 ```
 
-Nested lists (`map.listOflistsOflistsOfStrings`) is not supported, only lists of primitives and lists of objects.
+Nested lists (`map.listOflistsOflistsOfStrings`) are not supported, only lists of primitives and lists of objects.
 
-#### Lists of objects
+### Lists of objects
 
 Lists of objects are accessed by ```map.objectList()```. The behavior is consistent with that of regular lists, save some Gotchas. To filter invalid objects in `toList()` use `toList(Include.objects())`. Check the source to extend this transformer.
 
-## Gotchas
+# Gotchas
 
-### Lists of objects
+## Lists of objects
 
 Using `or()` for lists of objects is awkward. On one hand you want it to be an `Iterable<MapWrapper>` so that you can use the elements directly:
 ```
@@ -146,7 +151,15 @@ but that would mean objectList returns an `Iterable<Map>`. The ugly solution is 
 map.objectList("persons").or(MapWrapper.wrap(alternative));
 ```
 
-## TODO
+You can also import `wrap` statically to be a little more succint:
+```
+import static com.fredhonorio.mafu.MapWrapper.wrap;
+...
+MapWrapper m = wrap(alternative);
+```
+
+# TODO
+* More functional utilities? Which?
 * Lazy alternative to `toList(transform)`
 * Talk about number/long
 * Implement checked exceptions? Is it worth it? For Primitive accessors and objects it can be done, but for lists it has to be a runtime exception.
