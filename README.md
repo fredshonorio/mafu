@@ -18,19 +18,19 @@ Usage is as follows:
 
 After a map is wrapped: `MapWrapper map = MapWrapper.wrap(nakedmap)`, members are accessed by requesting specific types:
 
-```
+```java
 String name = map.string("name").get();
 ```
 
 Accessors for primitive types (`string()`, `boolean()`, etc) return a guava Optional, so you can do:
 
-```
+```java
 String name = map.string("name").or("empty name");
 ```
 
 Guava suppliers that throw an exception when the element is missing can be used like so:
 
-```
+```java
 // Throws MappingException.MissingOrWrongType
 String name = map.string("name").or(Throw.forString());
 ```
@@ -41,13 +41,14 @@ __NOTE:__ Accessor methods for primitives return `Optional.absent()` if the valu
 
 Accessing a java `Map` inside a MapWrapper by using `object()`, it returns another MapWrapper. Such as:
 
-```
+```java
 // Returns the inner map, wrapped
 MapWrapper name = map.object("name");
 String fullName = name.string("first").get() + name.string("last").get();
 ```
 
 MapWrapper is both a `Map` and a map container that mimics `Optional<Map>`:
+
 ```
 Map defaultName = // native map
 
@@ -65,7 +66,8 @@ __NOTE:__ The accessor method for maps (`object()`) returns `Optional.absent()` 
 
 ## Lists
 Lists are hard! To get a list of a specific type you use the `ListWrapper`:
-```
+
+```java
 ListWrapper<String> names = map.stringList("names");
 
 // Implements Iterable<T>
@@ -86,7 +88,8 @@ It does __not__ check if the contained values match. Check the next section for 
 ### Safety
 
 The problem with lists is that you can't know ahead of time if every element is of the declared type. So this can happen:
-```
+
+```java
 MapWrapper m = MapWrapper.wrap(
     ImmutableMap.of(
         "badlist", ImmutableList.of("A", 2)
@@ -95,10 +98,11 @@ MapWrapper m = MapWrapper.wrap(
 
 ListWrapper<String> goodList = m.stringList("badlist");
 ```
+
 However, once you iterate the list and get to `2` you'll get a `MappingException.WrongType` error because `2` is not a `String` even thought `stringList` returns a `ListWrapper<String>`. To eleviate this you can either catch
 `MappingException.WrongType` or transform the elements of the list by passing a transformer to `toList`, like so:
-```
 
+```java
 // Remove null elements and use the result of toString for the rest
 Function<Object, Optional<String>> convertToString = new Function<Object, Optional<String>>() {
     @Override
@@ -114,11 +118,13 @@ Function<Object, Optional<String>> convertToString = new Function<Object, Option
 List<String> safeList = map.stringList("unsafeList").toList(convertToString);
 
 ```
+
 To create your own transformer simply create a `Function<Object, Optional<T>>` where `T` is the type contained.
 Return `Optional.absent()` to exclude the value from the list.
 
 A `Function` to filter out elements that are not of a certain class is provided:
-```
+
+```java
 List<String> safeList = map.stringList("unsafeList").toList(Include.ofClass(String.class));
 ```
 
@@ -133,26 +139,32 @@ Lists of objects are accessed by ```map.objectList()```. The behavior is consist
 ## Lists of objects
 
 Using `or()` for lists of objects is awkward. On one hand you want it to be an `Iterable<MapWrapper>` so that you can use the elements directly:
-```
+
+```java
 List<String> names = new LinkedList<String>();
 
 for(MapWrapper person : map.objectList("persons")) {
     names.add(person.string("name"));
 }
 ```
+
 but it would be useful to have:
-```
+
+```java
 Map alternative = // a native (non-wrapped) map
 
 map.objectList("persons").or(alternative);
 ```
+
 but that would mean objectList returns an `Iterable<Map>`. The ugly solution is to wrap the native map:
-```
+
+```java
 map.objectList("persons").or(MapWrapper.wrap(alternative));
 ```
 
-You can also import `wrap` statically to be a little more succint:
-```
+You can also import `wrap` statically to be a little more succinct:
+
+```java
 import static com.fredhonorio.mafu.MapWrapper.wrap;
 ...
 MapWrapper m = wrap(alternative);
