@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.junit.internal.runners.statements.Fail;
 
+import com.fredhonorio.mafu.list.ListWrapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 
 public class MapWrapperTest {
 
@@ -66,7 +65,7 @@ public class MapWrapperTest {
 	@Test
 	public void testOrMap() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		assertEquals(JUDE, map.object("MISSING_MAP").or(JUDE));
+		assertEquals(JUDE, map.object("MISSING_KEY").or(JUDE));
 	}
 
 	@Test(expected = MappingException.MissingOrWrongType.class)
@@ -101,5 +100,37 @@ public class MapWrapperTest {
 	public void testObjectList() {
 		MapWrapper map = MapWrapper.wrap(MAP);
 		assertEquals(BAND, map.objectList("aListOfObjects").toList());
+	}
+
+	@Test(expected = MappingException.MissingOrWrongType.class)
+	public void testChecked() {
+		MapWrapper map = MapWrapper.wrap(MAP);
+		assertEquals(BAND, map.stringList("nothing").or(Throw.forStringList()));
+	}
+
+	@Test
+	public void testListOr() {
+		Iterable<String> x = MapWrapper.wrap(MAP).stringList("axListOfStrings").or(ImmutableList.of("hey"));
+		assertEquals(ImmutableList.of("hey"), x);
+	}
+
+	@Test
+	public void testBadList() {
+
+		MapWrapper m = MapWrapper.wrap(
+				ImmutableMap.of(
+						"badlist", ImmutableList.of("A", 2)
+				)
+		);
+
+		for (Object x : m.stringList("badlist"))
+			System.out.println(x);
+	}
+
+	@Test
+	public void testFuture() {
+
+		List<String> x = MapWrapper.wrap(MAP).stringList("aListOfStrings").toList();
+		System.out.println(x);
 	}
 }

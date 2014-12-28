@@ -23,6 +23,10 @@ public class Throw<T> implements Supplier<T> {
 		return new Throw<Boolean>();
 	}
 
+	public static Supplier<Iterable<String>> forStringList() {
+		return new Throw<Iterable<String>>();
+	}
+
 	@SuppressWarnings("rawtypes")
 	public static Supplier<Map> forMap() {
 		return new Throw<Map>();

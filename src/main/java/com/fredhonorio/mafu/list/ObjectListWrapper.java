@@ -1,21 +1,16 @@
 package com.fredhonorio.mafu.list;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import com.fredhonorio.mafu.MapWrapper;
 import com.fredhonorio.mafu.MappingException;
 import com.fredhonorio.mafu.Util;
-import com.google.common.collect.ImmutableList;
 
-public class ObjectListWrapper extends ListWrapper<MapWrapper> {
+public class ObjectListWrapper extends PresentListWrapper<MapWrapper> {
 
-	public static final ObjectListWrapper EMPTY = new ObjectListWrapper(
-			ImmutableList.copyOf(new LinkedList<MapWrapper>()), true);
-
-	public ObjectListWrapper(Iterable<MapWrapper> list, boolean absent) {
-		super(list, absent);
+	public ObjectListWrapper(Iterable<MapWrapper> list) {
+		super(list);
 	}
 
 	@Override

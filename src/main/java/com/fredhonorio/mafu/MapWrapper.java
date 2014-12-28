@@ -6,29 +6,20 @@ import java.util.Map;
 import java.util.Set;
 
 import com.fredhonorio.mafu.list.ListWrapper;
-import com.fredhonorio.mafu.list.ObjectListWrapper;
+import com.fredhonorio.mafu.list.PresentListWrapper;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("rawtypes")
 public class MapWrapper implements Map {
 
-	/*
-	 * Static
-	 */
+	// Static
 
-	private final static MapWrapper EMPTY_MAPWRAPPER = new MapWrapper();
+	final static MapWrapper EMPTY_MAPWRAPPER = new MapWrapper();
 
-	private final static ListWrapper<String> EMPTY_STR_LISTWRAPPER = ListWrapper.forPrimitive(ImmutableList.of(),
-			String.class);
-
-	// private final static ListWrapper emptyStringList = new
-	// ListWrapper<String>(new LinkedList<String>());
-	// private final static ListWrapper emptyObjectList = new
-	// ListWrapper.ObjectListWrapper(new LinkedList<Map>());
+	final static ListWrapper<String> EMPTY_STRLIST = ListWrapper.absent(String.class);
 
 	public static MapWrapper wrap(Map map) {
 		return new MapWrapper(map);
@@ -90,9 +81,9 @@ public class MapWrapper implements Map {
 		Optional<List> inner = getAndCast(key, List.class);
 
 		if (!inner.isPresent())
-			return EMPTY_STR_LISTWRAPPER;
+			return EMPTY_STRLIST;
 
-		return ListWrapper.forPrimitive(inner.get(), String.class);
+		return PresentListWrapper.forPrimitive(inner.get(), String.class);
 	}
 
 	// TODO: lists(longs, booleans)
@@ -101,13 +92,13 @@ public class MapWrapper implements Map {
 		Optional<List> inner = getAndCast(key, List.class);
 
 		if (!inner.isPresent())
-			return ObjectListWrapper.EMPTY;
+			return ListWrapper.absent(MapWrapper.class);
 
-		return ListWrapper.forObject(inner.get());
+		return PresentListWrapper.forObject(inner.get());
 	}
 
 	/*
-	 * Optional interface implementation
+	 * Optional<T> implementation
 	 */
 
 	public Map get() {
@@ -196,48 +187,5 @@ public class MapWrapper implements Map {
 	public Collection values() {
 		return map.values();
 	}
-
-	//
-	// @SuppressWarnings("unchecked")
-	// public Iterable<MapWrapper> valuesAsObjects() {
-	// return new ListWrapper.ObjectListWrapper(map.values());
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// public ListWrapper<String> stringList(Object key) {
-	// return new ListWrapper<>((Iterable<String>) map.get(key));
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// public ListWrapper<String> stringListOrEmpty(Object key) {
-	// if (!map.containsKey(key)) {
-	// return emptyStringList;
-	// }
-	//
-	// return new ListWrapper<>((Iterable<String>) map.get(key));
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// public ListWrapper<MapWrapper> objectListOrEmpty(Object key) {
-	// if (!map.containsKey(key))
-	// return emptyObjectList;
-	//
-	// return new ListWrapper.ObjectListWrapper((Iterable) map.get(key));
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// public ListWrapper<MapWrapper> objectList(Object key) {
-	// if (!map.containsKey(key)) {
-	// throw new KeyDoesNotExist(key.toString(), map);
-	// }
-	//
-	// return new ListWrapper.ObjectListWrapper((Iterable) map.get(key));
-	// }
-	//
-	// @Override
-	// public String toString() {
-	// return map.toString();
-	// }
-	//
 
 }
