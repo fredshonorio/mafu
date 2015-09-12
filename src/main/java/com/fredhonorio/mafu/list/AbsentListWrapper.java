@@ -3,11 +3,11 @@ package com.fredhonorio.mafu.list;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.fredhonorio.mafu.MappingException;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 
 class AbsentListWrapper<T> extends ListWrapper<T> {
 
@@ -30,13 +30,19 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	}
 
 	@Override
-	public Iterable<T> or(Iterable<T> list) {
+	public Iterable<T> orElse(Iterable<T> list) {
 		return list;
 	}
 
 	@Override
-	public Iterable<T> or(Supplier<Iterable<T>> listS) {
+	public Iterable<T> orElseGet(Supplier<Iterable<T>> listS) {
 		return listS.get();
+	}
+
+
+	@Override
+	public <X extends Throwable> Iterable<T> orElseThrow(Supplier<? extends X> exSup) throws X {
+		throw exSup.get();
 	}
 
 	@Override
@@ -48,4 +54,5 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	public List<T> toList(Function<Object, Optional<T>> transform) {
 		return Collections.emptyList();
 	}
+
 }
