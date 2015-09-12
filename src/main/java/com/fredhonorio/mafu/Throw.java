@@ -1,8 +1,7 @@
 package com.fredhonorio.mafu;
 
 import java.util.Map;
-
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 public class Throw<T> implements Supplier<T> {
 

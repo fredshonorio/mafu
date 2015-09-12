@@ -3,12 +3,12 @@ package com.fredhonorio.mafu.list;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import com.fredhonorio.mafu.Immutable;
 import com.fredhonorio.mafu.MapWrapper;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 
 /**
  * Defines a wrapper for a list.
@@ -57,7 +57,7 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 	public abstract Iterator<T> iterator();
 
 	public List<T> toList() {
-		return ImmutableList.copyOf(iterator());
+		return Immutable.listFrom(iterator());
 	}
 
 	/*

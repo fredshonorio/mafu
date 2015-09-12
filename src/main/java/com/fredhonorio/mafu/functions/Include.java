@@ -1,11 +1,11 @@
 package com.fredhonorio.mafu.functions;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 import com.fredhonorio.mafu.MapWrapper;
 import com.fredhonorio.mafu.Util;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 
 /**
  * Functions that filter and transform list objects.
@@ -27,7 +27,7 @@ public abstract class Include {
 				if (m.isPresent())
 					return Optional.of(MapWrapper.wrap(m.get()));
 
-				return Optional.absent();
+				return Optional.empty();
 			}
 		};
 	}

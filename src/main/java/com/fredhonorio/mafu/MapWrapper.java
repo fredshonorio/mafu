@@ -1,15 +1,14 @@
 package com.fredhonorio.mafu;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.fredhonorio.mafu.list.ListWrapper;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableMap;
 
 @SuppressWarnings("rawtypes")
 public class MapWrapper implements Map {
@@ -41,7 +40,7 @@ public class MapWrapper implements Map {
 	}
 
 	private MapWrapper() {
-		this.map = ImmutableMap.of();
+		this.map = Collections.emptyMap();
 		this.absent = true;
 	}
 
@@ -52,11 +51,11 @@ public class MapWrapper implements Map {
 				V v = cls.cast(map.get(key));
 				return Optional.of(v);
 			} catch (ClassCastException e) {
-				return Optional.absent();
+				return Optional.empty();
 			}
 		}
 
-		return Optional.absent();
+		return Optional.empty();
 	}
 
 	/*
@@ -124,6 +123,7 @@ public class MapWrapper implements Map {
 
 	/*
 	 * Optional<T> implementation
+	 * TODO: adjust to java 8
 	 */
 
 	public Map get() {
@@ -133,17 +133,17 @@ public class MapWrapper implements Map {
 	}
 
 	public Map or(Map map) {
-		Preconditions.checkNotNull(map);
+		Assert.notNull(map);
 		return !absent ? this.map : map;
 	}
 
 	public MapWrapper or(MapWrapper mapw) {
-		Preconditions.checkNotNull(mapw);
+		Assert.notNull(mapw);
 		return !absent ? this : mapw;
 	}
 
 	public Map or(Supplier<Map> map) {
-		Preconditions.checkNotNull(map);
+		Assert.notNull(map);
 		return !absent ? this.map : map.get();
 	}
 

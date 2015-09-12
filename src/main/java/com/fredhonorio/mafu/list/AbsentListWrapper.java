@@ -3,11 +3,11 @@ package com.fredhonorio.mafu.list;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import com.fredhonorio.mafu.MappingException;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 
 class AbsentListWrapper<T> extends ListWrapper<T> {
 

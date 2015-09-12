@@ -1,6 +1,6 @@
 package com.fredhonorio.mafu;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 public abstract class Util {
 
@@ -19,7 +19,7 @@ public abstract class Util {
 			return Optional.of(t);
 		} catch (ClassCastException e) {
 		}
-		return Optional.absent();
+		return Optional.empty();
 	}
 
 }
