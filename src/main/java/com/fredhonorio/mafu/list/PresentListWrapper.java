@@ -18,12 +18,18 @@ public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 	protected abstract Iterator<?> nativeIterator();
 
 	@Override
-	public Iterable<T> or(Iterable<T> list) {
+	public Iterable<T> orElse(Iterable<T> list) {
 		return this;
 	}
 
 	@Override
-	public Iterable<T> or(Supplier<Iterable<T>> listS) {
+	public Iterable<T> orElseGet(Supplier<Iterable<T>> listS) {
+		return this;
+	}
+
+	@Override
+	public <X extends Throwable> Iterable<T> orElseThrow(
+			Supplier<? extends X> exSup) throws X {
 		return this;
 	}
 

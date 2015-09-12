@@ -61,13 +61,14 @@ public abstract class ListWrapper<T> implements Iterable<T> {
 	}
 
 	/*
-	 * Optional<T> inteface
+	 * Optional<T> interface
 	 */
 
-	public abstract Iterable<T> or(Iterable<T> list);
+	public abstract Iterable<T> orElse(Iterable<T> list);
 
-	public abstract Iterable<T> or(Supplier<Iterable<T>> listS);
+	public abstract Iterable<T> orElseGet(Supplier<Iterable<T>> listS);
+
+	public abstract <X extends Throwable> Iterable<T> orElseThrow(Supplier<? extends X> exSup) throws X;
 
 	public abstract List<T> toList(Function<Object, Optional<T>> transform);
-
 }

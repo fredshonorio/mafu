@@ -43,13 +43,13 @@ public class PrimitiveListWrapperTest {
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testChecked() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		assertEquals(BAND, map.stringList("nothing").or(Throw.forStringList()));
+		assertEquals(BAND, map.stringList("nothing").orElseGet(Throw.forStringList()));
 	}
 
 	@Test
 	public void testListOr() {
 		Iterable<String> x = MapWrapper.wrap(MAP).stringList("axListOfStrings")
-				.or(list("hey"));
+				.orElse(list("hey"));
 		assertEquals(list("hey"), x);
 	}
 

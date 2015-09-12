@@ -38,7 +38,7 @@ public class ObjectListWrapperTest {
 		// or() for lists of objects is awkward
 		MapWrapper alternative = MapWrapper.wrap(map("woo", "wee"));
 
-		Iterator<?> x = map.objectList("nothing").or(list(alternative)).iterator();
+		Iterator<?> x = map.objectList("nothing").orElse(list(alternative)).iterator();
 		assertEquals(alternative, x.next());
 		assertFalse(x.hasNext());
 

@@ -30,13 +30,19 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	}
 
 	@Override
-	public Iterable<T> or(Iterable<T> list) {
+	public Iterable<T> orElse(Iterable<T> list) {
 		return list;
 	}
 
 	@Override
-	public Iterable<T> or(Supplier<Iterable<T>> listS) {
+	public Iterable<T> orElseGet(Supplier<Iterable<T>> listS) {
 		return listS.get();
+	}
+
+
+	@Override
+	public <X extends Throwable> Iterable<T> orElseThrow(Supplier<? extends X> exSup) throws X {
+		throw exSup.get();
 	}
 
 	@Override
@@ -48,4 +54,5 @@ class AbsentListWrapper<T> extends ListWrapper<T> {
 	public List<T> toList(Function<Object, Optional<T>> transform) {
 		return Collections.emptyList();
 	}
+
 }
