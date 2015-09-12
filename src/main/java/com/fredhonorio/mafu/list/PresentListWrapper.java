@@ -1,12 +1,12 @@
 package com.fredhonorio.mafu.list;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 
@@ -18,19 +18,25 @@ public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 	protected abstract Iterator<?> nativeIterator();
 
 	@Override
-	public Iterable<T> or(Iterable<T> list) {
+	public Iterable<T> orElse(Iterable<T> list) {
 		return this;
 	}
 
 	@Override
-	public Iterable<T> or(Supplier<Iterable<T>> listS) {
+	public Iterable<T> orElseGet(Supplier<Iterable<T>> listS) {
+		return this;
+	}
+
+	@Override
+	public <X extends Throwable> Iterable<T> orElseThrow(
+			Supplier<? extends X> exSup) throws X {
 		return this;
 	}
 
 	@Override
 	public List<T> toList(Function<Object, Optional<T>> transform) {
 
-		ImmutableList.Builder<T> list = ImmutableList.builder();
+		LinkedList<T> list = new LinkedList<>();
 		Iterator<?> it = nativeIterator();
 
 		while (it.hasNext()) {
@@ -39,7 +45,7 @@ public abstract class PresentListWrapper<T> extends ListWrapper<T> {
 				list.add(x.get());
 		}
 
-		return list.build();
+		return Collections.unmodifiableList(list);
 	}
 
 }

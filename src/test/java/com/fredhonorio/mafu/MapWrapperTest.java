@@ -1,34 +1,26 @@
 package com.fredhonorio.mafu;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
 public class MapWrapperTest {
 
-	@SuppressWarnings("rawtypes")
-	public static Map JUDE = ImmutableMap.of("c1", "hey", "c2", "jude");
-	public static List<String> ROSES = ImmutableList.of("roses", "are", "red", "violets", "are", "blue");
+	public static Map<String, String> JUDE = Immutable.map("c1", "hey", "c2", "jude");
+	public static List<String> ROSES = Arrays.asList("roses", "are", "red", "violets", "are", "blue");
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Map MAP = ImmutableMap.copyOf(new HashMap() {
-		private static final long serialVersionUID = 1L;
-		{
-			put("aString", "hey");
-			put("aBoolean", false);
-			put("aNumber", 10L);
-			put("aMap", JUDE);
-			put("anotherMap", JUDE);
-			put("aListOfStrings", ROSES);
-		}
-	});
+	public static Map<String, ?> MAP = Immutable.map(
+		"aString", "hey",
+		"aBoolean", false,
+		"aNumber", 10L,
+		"aMap", JUDE,
+		"anotherMap", JUDE,
+		"aListOfStrings", ROSES
+	);
 
 	@Test
 	public void testBasic() {
@@ -43,13 +35,13 @@ public class MapWrapperTest {
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testMissing() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.string("MISSING").or(Throw.forString());
+		map.string("MISSING").orElseThrow(Throw.build());
 	}
 
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testWrongType() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.string("b").or(Throw.forString());
+		map.string("b").orElseThrow(Throw.build());
 	}
 
 	@Test
@@ -62,20 +54,26 @@ public class MapWrapperTest {
 	@Test
 	public void testOrMap() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		assertEquals(JUDE, map.object("MISSING_KEY").or(JUDE));
+		assertEquals(JUDE, map.object("MISSING_KEY").orElse(JUDE));
 	}
 
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testOrThrow() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.object("MISSING_MAP").or(Throw.forObject());
+		map.object("MISSING_MAP").orElseThrow(Throw.build());
+	}
+
+	@Test(expected = MappingException.MissingOrWrongType.class)
+	public void testOrElseThrow() throws Throwable {
+		MapWrapper map = MapWrapper.wrap(MAP);
+		map.object("MISSING_MAP").orElseThrow(() -> new MappingException.MissingOrWrongType());
 	}
 
 	@Test
 	public void testOrMapWrapper() {
 		MapWrapper map = MapWrapper.wrap(MAP);
 		MapWrapper alt = MapWrapper.wrap(JUDE);
-		assertEquals(JUDE, map.object("MISSING_MAP").or(alt).get());
+		assertEquals(JUDE, map.object("MISSING_MAP").orElse(alt).get());
 	}
 
 }
