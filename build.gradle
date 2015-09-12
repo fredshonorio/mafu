@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 targetCompatibility = sourceCompatibility = 1.8
 
 project.group = "com.fredhonorio"
-version = '2.0.0-rc'
+version = '2.0.1-rc'
 
 jar {
     manifest {

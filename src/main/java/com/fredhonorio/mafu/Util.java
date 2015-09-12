@@ -21,5 +21,4 @@ public abstract class Util {
 		}
 		return Optional.empty();
 	}
-
 }
