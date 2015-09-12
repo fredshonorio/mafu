@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
 import com.fredhonorio.mafu.list.ListWrapper;
 
+// TODO: test if this would be more succinct with subtypes: PresentMap | AbsentMap
 @SuppressWarnings("rawtypes")
 public class MapWrapper implements Map {
 
@@ -123,28 +125,37 @@ public class MapWrapper implements Map {
 
 	/*
 	 * Optional<T> implementation
-	 * TODO: adjust to java 8
 	 */
 
 	public Map get() {
 		if (absent)
-			throw new IllegalStateException("MapWrapper.get() cannot be called on an absent value");
+			throw new NoSuchElementException("MapWrapper.get() cannot be called on an absent value");
 		return map;
 	}
 
-	public Map or(Map map) {
+	public Map orElse(Map map) {
 		Assert.notNull(map);
 		return !absent ? this.map : map;
 	}
 
-	public MapWrapper or(MapWrapper mapw) {
+	public MapWrapper orElse(MapWrapper mapw) {
 		Assert.notNull(mapw);
 		return !absent ? this : mapw;
 	}
 
-	public Map or(Supplier<Map> map) {
+	public Map orElseGet(Supplier<Map> map) {
 		Assert.notNull(map);
 		return !absent ? this.map : map.get();
+	}
+
+	public <X extends Throwable> MapWrapper orElseThrow(Supplier<? extends X> exSup) throws X {
+		if (absent)
+			throw exSup.get();
+		return this;
+	}
+
+	public Optional<Map> toOptional() {
+		return absent ? Optional.empty() : Optional.of(this.map);
 	}
 
 	/*

@@ -54,20 +54,26 @@ public class MapWrapperTest {
 	@Test
 	public void testOrMap() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		assertEquals(JUDE, map.object("MISSING_KEY").or(JUDE));
+		assertEquals(JUDE, map.object("MISSING_KEY").orElse(JUDE));
 	}
 
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testOrThrow() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.object("MISSING_MAP").or(Throw.forObject());
+		map.object("MISSING_MAP").orElseGet(Throw.forObject());
+	}
+
+	@Test(expected = MappingException.MissingOrWrongType.class)
+	public void testOrElseThrow() throws Throwable {
+		MapWrapper map = MapWrapper.wrap(MAP);
+		map.object("MISSING_MAP").orElseThrow(() -> new MappingException.MissingOrWrongType());
 	}
 
 	@Test
 	public void testOrMapWrapper() {
 		MapWrapper map = MapWrapper.wrap(MAP);
 		MapWrapper alt = MapWrapper.wrap(JUDE);
-		assertEquals(JUDE, map.object("MISSING_MAP").or(alt).get());
+		assertEquals(JUDE, map.object("MISSING_MAP").orElse(alt).get());
 	}
 
 }

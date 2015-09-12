@@ -3,6 +3,7 @@ package com.fredhonorio.mafu;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@Deprecated
 public class Throw<T> implements Supplier<T> {
 
 	public static Supplier<Boolean> forBool() {
