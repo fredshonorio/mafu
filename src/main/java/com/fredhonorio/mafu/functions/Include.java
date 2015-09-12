@@ -16,29 +16,10 @@ import com.fredhonorio.mafu.Util;
 public abstract class Include {
 
 	public static Function<Object, Optional<MapWrapper>> objects() {
-		return new Function<Object, Optional<MapWrapper>>() {
-
-			@Override
-			public Optional<MapWrapper> apply(Object input) {
-
-				@SuppressWarnings("rawtypes")
-				Optional<Map> m = Util.tryCast(input, Map.class);
-
-				if (m.isPresent())
-					return Optional.of(MapWrapper.wrap(m.get()));
-
-				return Optional.empty();
-			}
-		};
+		return (o) -> Util.tryCast(o, Map.class).map(m -> MapWrapper.wrap(m));
 	}
 
 	public static <T> Function<Object, Optional<T>> ofClass(final Class<T> cls) {
-		return new Function<Object, Optional<T>>() {
-
-			@Override
-			public Optional<T> apply(Object input) {
-				return Util.tryCast(input, cls);
-			}
-		};
+		return (o) -> Util.tryCast(o, cls);
 	}
 }

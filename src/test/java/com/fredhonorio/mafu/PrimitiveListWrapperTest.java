@@ -43,7 +43,7 @@ public class PrimitiveListWrapperTest {
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testChecked() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		assertEquals(BAND, map.stringList("nothing").orElseGet(Throw.forStringList()));
+		assertEquals(BAND, map.stringList("nothing").orElseThrow(Throw.build()));
 	}
 
 	@Test

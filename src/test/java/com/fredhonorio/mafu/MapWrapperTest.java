@@ -35,13 +35,13 @@ public class MapWrapperTest {
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testMissing() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.string("MISSING").orElseGet(Throw.forString());
+		map.string("MISSING").orElseThrow(Throw.build());
 	}
 
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testWrongType() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.string("b").orElseGet(Throw.forString());
+		map.string("b").orElseThrow(Throw.build());
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class MapWrapperTest {
 	@Test(expected = MappingException.MissingOrWrongType.class)
 	public void testOrThrow() {
 		MapWrapper map = MapWrapper.wrap(MAP);
-		map.object("MISSING_MAP").orElseGet(Throw.forObject());
+		map.object("MISSING_MAP").orElseThrow(Throw.build());
 	}
 
 	@Test(expected = MappingException.MissingOrWrongType.class)
