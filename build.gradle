@@ -2,6 +2,8 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 targetCompatibility = sourceCompatibility = 1.8
+
+project.group = "com.fredhonorio"
 version = '0.1'
 
 jar {
@@ -11,9 +13,8 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
-}
+configurations { deployerJars }
+repositories { mavenCentral() }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
