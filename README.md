@@ -1,5 +1,5 @@
 
-MAFU
+MAFU (DEPRECATED, use [json-decoder](https://github.com/fredshonorio/json-decoder) instead)
 ====
 MAps For hUmans
 ----
